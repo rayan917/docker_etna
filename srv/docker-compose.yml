@@ -1,0 +1,32 @@
+
+version: '2'
+services:
+ wordpress:
+    build: wordpress
+    restart: on-failure
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wordpress.rule=Host(`monsite.etna`)"
+      - "traefik.http.routers.wordpress.entrypoints=web"
+       
+ mariadb:
+   build: mariadb
+   volumes:
+    - db-data:/var/lib/mysql
+   ports:
+     - "3306:3306"
+   restart: on-failure
+ 
+ traefik:
+   build: traefik
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+   restart: on-failure
+   ports:
+     - "8080:8080"
+     - "80:80"
+volumes:
+    db-data: {} 
+
+ 
+
